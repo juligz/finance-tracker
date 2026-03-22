@@ -1,7 +1,10 @@
 from datetime import datetime
-from sqlalchemy import String, Float, ForeignKey, DateTime, Enum
+
+from sqlalchemy import DateTime, Enum, Float, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.database.connection import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -45,11 +48,14 @@ class Transaction(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id"), nullable=False)
-    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=False)
+    category_id: Mapped[int] = mapped_column(
+        ForeignKey("categories.id"), nullable=False
+    )
     amount: Mapped[float] = mapped_column(Float, nullable=False)
     description: Mapped[str] = mapped_column(String(255))
     date: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    type: Mapped[str] = mapped_column(Enum("income", "expense", name="transaction_type"))
-
+    type: Mapped[str] = mapped_column(
+        Enum("income", "expense", name="transaction_type")
+    )
     account: Mapped["Account"] = relationship(back_populates="transactions")
     category: Mapped["Category"] = relationship(back_populates="transactions")
